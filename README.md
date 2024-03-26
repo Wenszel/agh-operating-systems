@@ -13,3 +13,7 @@ Solutions to tasks for the 2023/2024 Operating Systems Course at AGH University.
 ## Lab 3 - Processes Management
 1. [Create given number of child processes](https://github.com/Wenszel/agh-operating-systems/blob/main/lab3/1.c)
 1. [Execl | Local and Global Variables](https://github.com/Wenszel/agh-operating-systems/blob/main/lab3/2.c)
+
+## Lab 4 - Signals
+1. [Sending signals](https://github.com/Wenszel/agh-operating-systems/blob/main/lab4/1.c)
+2. [Communication between two processes](https://github.com/Wenszel/agh-operating-systems/blob/main/lab4/catcher.c)
