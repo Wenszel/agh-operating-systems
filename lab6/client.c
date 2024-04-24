@@ -8,18 +8,28 @@
 #define SERVER_QUEUE "/server_queue"
 #define MAX_MESSAGE_SIZE 1024
 
+int client_id = -1;
+
+
 void *receiver(void *arg) {
     mqd_t client_queue = *(mqd_t *)arg;
     char buffer[MAX_MESSAGE_SIZE];
 
     while (1) {
+        
         ssize_t bytes_read = mq_receive(client_queue, buffer, MAX_MESSAGE_SIZE, NULL);
+        
         if (bytes_read >= 0) {
             buffer[bytes_read] = '\0';
+            if (client_id == -1) {
+                client_id = atoi(buffer);
+                // printf("%d \n", client_id);
+            }
             printf("Received: %s\n", buffer);
         } else {
             perror("Receiver error");
         }
+        
     }
     return NULL;
 }
@@ -46,10 +56,6 @@ int main() {
     char init_message[64];
     sprintf(init_message, "INIT %s", client_queue_name);
     mq_send(server_queue, init_message, strlen(init_message) + 1, 0);
-
-    char client_id_str[10];
-    mq_receive(client_queue, client_id_str, 10, NULL);
-    int client_id = atoi(client_id_str);
 
     pthread_t thread_id;
     pthread_create(&thread_id, NULL, receiver, &client_queue);

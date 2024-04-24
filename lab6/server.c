@@ -68,10 +68,8 @@ int main() {
             } else {
                 int client_id;
                 char message[1024];
-                printf("%s \n", buffer);
-                sscanf(buffer, "%d %s", &client_id, message);
+                sscanf(buffer, "%d %[^\n]", &client_id, message);
                 for (int i = 0; i < client_count; i++) {
-                    printf("%d %d \n", client_id, i);
                     if (client_id != i){
                         mq_send(clients[i].queue, message, strlen(message) + 1, 0);
                     }
