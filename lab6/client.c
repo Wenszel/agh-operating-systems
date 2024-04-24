@@ -3,35 +3,29 @@
 #include <mqueue.h>
 #include <string.h>
 #include <unistd.h>
-#include <pthread.h>
 
 #define SERVER_QUEUE "/server_queue"
 #define MAX_MESSAGE_SIZE 1024
 
 int client_id = -1;
 
-
-void *receiver(void *arg) {
-    mqd_t client_queue = *(mqd_t *)arg;
+void receiver(mqd_t client_queue) {
     char buffer[MAX_MESSAGE_SIZE];
 
     while (1) {
-        
         ssize_t bytes_read = mq_receive(client_queue, buffer, MAX_MESSAGE_SIZE, NULL);
         
         if (bytes_read >= 0) {
             buffer[bytes_read] = '\0';
             if (client_id == -1) {
                 client_id = atoi(buffer);
-                // printf("%d \n", client_id);
             }
             printf("Received: %s\n", buffer);
         } else {
             perror("Receiver error");
+            exit(1);
         }
-        
     }
-    return NULL;
 }
 
 int main() {
@@ -57,15 +51,22 @@ int main() {
     sprintf(init_message, "INIT %s", client_queue_name);
     mq_send(server_queue, init_message, strlen(init_message) + 1, 0);
 
-    pthread_t thread_id;
-    pthread_create(&thread_id, NULL, receiver, &client_queue);
+    pid_t pid = fork();
 
-    while (1) {
-        char message[MAX_MESSAGE_SIZE];
-        fgets(message, MAX_MESSAGE_SIZE, stdin);
-        char full_message[MAX_MESSAGE_SIZE];
-        sprintf(full_message, "%d %s", client_id, message);
-        mq_send(server_queue, full_message, strlen(full_message) + 1, 0);
+    if (pid == 0) {
+        receiver(client_queue);
+        exit(0);  
+    } else if (pid > 0) {
+        while (1) {
+            char message[MAX_MESSAGE_SIZE];
+            fgets(message, MAX_MESSAGE_SIZE, stdin);
+            char full_message[MAX_MESSAGE_SIZE];
+            sprintf(full_message, "%d %s", client_id, message);
+            mq_send(server_queue, full_message, strlen(full_message) + 1, 0);
+        }
+    } else {
+        perror("fork failed");
+        exit(1);
     }
 
     mq_close(client_queue);
