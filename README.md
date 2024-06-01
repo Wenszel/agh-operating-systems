@@ -17,3 +17,13 @@ Solutions to tasks for the 2023/2024 Operating Systems Course at AGH University.
 ## Lab 4 - Signals
 1. [Sending signals](https://github.com/Wenszel/agh-operating-systems/blob/main/lab4/1.c)
 2. [Communication between two processes](https://github.com/Wenszel/agh-operating-systems/blob/main/lab4/catcher.c)
+
+
+## Lab 10 - Sockets I - TCP
+The task was to create a server-client chat application using TCP sockets
+1. [Server file](https://github.com/Wenszel/agh-operating-systems/blob/main/lab10/server.c)
+2. [Client file](https://github.com/Wenszel/agh-operating-systems/blob/main/lab10/client.c)
+## Lab 11 - Sockets II - UDP
+The task was to modify the previous chat application to use UDP sockets
+1. [Server file](https://github.com/Wenszel/agh-operating-systems/blob/main/lab11/server.c)
+2. [Client file](https://github.com/Wenszel/agh-operating-systems/blob/main/lab11/client.c)
